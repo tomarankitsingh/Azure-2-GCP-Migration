@@ -32,6 +32,8 @@ Cloud migration refers to the process of moving data, applications, or workloads
 
 Let's begin the Migration Process!
 
+## In the Azure Portal
+
 ## Step 1: Create a Resource Group
 ![Screenshot 2024-09-29 112902](https://github.com/user-attachments/assets/d1634405-9747-4b94-8cdd-78aea7fe7e2e)
 
@@ -89,4 +91,98 @@ Let's begin the Migration Process!
 
 For example, if your Web VM's public IP is 52.183.21.18, enter http://52.183.21.18 in your browser to view the site.
 
-## Step 5: 
+## Step 5: Create an App Registration
+![image](https://github.com/user-attachments/assets/875d4b1f-6b9e-4447-a7d5-72cdced19b6b)
+
+1. In the search bar, search for `App Registration` and hit `New Registration`.
+2. Enter the **Name** and hit `Register`.
+3. Go to manage, inside the app registered and click on `Certificates & Secrets`.
+4. Click on `New client secret`. Enter the description and click on `Add`.
+5. Copy the **Value** in Notepad.
+
+## Step 6: Add Custom Role
+![image](https://github.com/user-attachments/assets/c75e3cab-be56-42aa-8b70-426e17077955)
+
+1. Go to Subscriptions, inside the subscription click on `Access control IAM`.
+2. Click `Add` then `Add Custom Role` and then click on `Start from json`.
+3. paste the below json file after entering your **SUBSCRIPTION_ID** and hit 'Review + Create`.
+```json
+       {
+  "properties": {
+        "roleName": "Minimum M2VM permissions role",
+        "description": "This role contains the bare minimum of Azure IAM permissions to support M2VM flow",
+        "assignableScopes": [
+              "/subscriptions/SUBSCRIPTION_ID"
+        ],
+  "permissions": [
+              {
+              "actions": [
+                    "Microsoft.Resources/subscriptions/resourceGroups/write",
+                    "Microsoft.Resources/subscriptions/resourceGroups/read",
+                    "Microsoft.Resources/subscriptions/resourceGroups/delete",
+                    "Microsoft.Compute/virtualMachines/read",
+                    "Microsoft.Compute/virtualMachines/write",
+                    "Microsoft.Compute/virtualMachines/deallocate/action",
+                    "Microsoft.Compute/disks/read",
+                    "Microsoft.Compute/snapshots/delete",
+                    "Microsoft.Compute/snapshots/write",
+                    "Microsoft.Compute/snapshots/beginGetAccess/action",
+                    "Microsoft.Compute/snapshots/read",
+                    "Microsoft.Compute/snapshots/endGetAccess/action"
+              ],
+              "notActions": [],
+              "dataActions": [],
+              "notDataActions": []
+              }
+        ]
+  }
+  }
+  ```
+
+## Step 7: Add Role Assignment
+![image](https://github.com/user-attachments/assets/1d29221c-45f9-4b82-af30-1eb83320db89)
+
+1. Go to Subscriptions, inside the subscription click on `Access control IAM`.
+2. Click `Add` then `Add role assignment`.
+3. Inside the `Role`. Search for your custom role like for me it is **Minimum M2VM permissions role**.
+4. Inside the `Members`. click on `select members` and search for the `App Registration Name` for me it is **TestingGCPMigration**.
+5. Click `Review + Assign`.
+
+## In the Google Cloud
+
+## Step 1: Click on Migrate to Virtual Machines
+![Screenshot 2024-10-04 100810](https://github.com/user-attachments/assets/4a38b709-6e31-4acc-9dcd-77f91b89c194)
+
+1. In the GCP, search for `Migrate to Virtual Machines`.
+2. Click on `sources` and then `Add Source`, then hit the `Add Azure Source`.
+3. Enter the **Name**, **GCP Region**, and **Azure Location** where the VM exists. Then, enter the following details from **Azure**:
+   - **Subscription ID** of Azure.
+   - **Client ID** from `Azure`, available inside `App Registration`.
+   - **Tenant ID** from `Azure`, available inside `App Registration`.
+   - **Client Secret Value** that was copied in `Step 5` of Azure.
+4. Click on `Create`.
+
+## Step 2: ADD the VM Migration
+![image](https://github.com/user-attachments/assets/f745f590-7802-454d-a363-4af737cbbd68)
+
+1. Wait till the `source` status becomes **Active**.
+2. Select the VMs, click on `Add Migrations` and then click on `VM Migration`.
+3. Go to `VM Migration`. Select the VMs click on `Migration` and then hit `Start Replication`.
+
+## Step 3: Edit Target Details
+![image](https://github.com/user-attachments/assets/151ba4f6-4452-4274-b6d1-730110024e27)
+
+1. Click on `Edit target details` inside the `VM Migrations` after selecting the VMs.
+2. Enter the **Instance Name**, **Project** and **Zone** inside the `General`.
+3. Inside the `Machine Configuration`
+   - Choose Machine type series - **e2**
+   - Choose Machine type - **e2-highcpu-2**
+   - On host maintenance, choose **Migrate VM Instance**
+   - Set the Automatic Start to **OFF**
+4. Inside the `Networking`, choose everything **Default**.
+5. Inside the `Additional Configuration`
+   - Choose service account as - **Compute Engine default service account**
+   - disk type - **Balanced**
+6. Click on `Save`.
+   
+   
