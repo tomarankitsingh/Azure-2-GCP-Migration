@@ -38,7 +38,7 @@ Let's begin the Migration Process!
 ![Screenshot 2024-09-29 112902](https://github.com/user-attachments/assets/d1634405-9747-4b94-8cdd-78aea7fe7e2e)
 
 1. Open the Azure portal.
-2. Use the search bar to find "Resource Groups" and click on `Create`.
+2. Use the search bar to find `Resource Groups` and click on `Create`.
 3. Enter `Migrate2GCP-RG` as the **Resource Group Name**.
 4. Choose `West US 2` (or your preferred region) for the **Region**.
 5. Click `Review + Create`, then select `Create`.
@@ -105,7 +105,7 @@ For example, if your Web VM's public IP is 52.183.21.18, enter http://52.183.21.
 
 1. Go to Subscriptions, inside the subscription click on `Access control IAM`.
 2. Click `Add` then `Add Custom Role` and then click on `Start from json`.
-3. paste the below json file after entering your **SUBSCRIPTION_ID** and hit 'Review + Create`.
+3. paste the below json file after entering your **SUBSCRIPTION_ID** and hit `Review + Create`.
 ```json
        {
   "properties": {
@@ -157,8 +157,8 @@ For example, if your Web VM's public IP is 52.183.21.18, enter http://52.183.21.
 2. Click on `sources` and then `Add Source`, then hit the `Add Azure Source`.
 3. Enter the **Name**, **GCP Region**, and **Azure Location** where the VM exists. Then, enter the following details from **Azure**:
    - **Subscription ID** of Azure.
-   - **Client ID** from `Azure`, available inside `App Registration`.
-   - **Tenant ID** from `Azure`, available inside `App Registration`.
+   - **Client ID** from Azure, available inside `App Registration`.
+   - **Tenant ID** from Azure, available inside `App Registration`.
    - **Client Secret Value** that was copied in `Step 5` of Azure.
 4. Click on `Create`.
 
@@ -184,5 +184,28 @@ For example, if your Web VM's public IP is 52.183.21.18, enter http://52.183.21.
    - Choose service account as - **Compute Engine default service account**
    - disk type - **Balanced**
 6. Click on `Save`.
+
+## Step 4: Cut-Over and Test-Clone
+![image](https://github.com/user-attachments/assets/dab2e686-7ba7-4439-901a-d7d60ead40c4)
+
+1. Wait until the `Replication Status` becomes `Active` from `First sync`.
+2. Select the VMs, click on `Cut-Over and Test-Clone` and then click on `Test-Clone`.
+
+## Step 5: Testing the Migration
+![Screenshot (3)](https://github.com/user-attachments/assets/b5c15ab8-8212-4913-8d9c-c8e240e622ef)
+
+1. Search for the `Compute Engine`, inside it go to `VM Instances`.
+2. Copy the External IP of VM and run the RDP.
+3. Use the same Username and Password which you set for Azure VM.
+4. In the VM, check for the site is still hosting or not. TYPE `localhost` in the browser.
+
+Congratulations!, You have successfully Migrate your VM from Azure to Google Cloud.
+
+## Contact
+
+For any questions, doubts, or clarifications regarding this repository, feel free to reach out:
+
+- Email: mailto:tomarankitsingh2000@gmail.com
+- LinkedIn: https://www.linkedin.com/in/tomarankitsingh/
    
    
